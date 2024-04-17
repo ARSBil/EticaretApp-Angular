@@ -1,0 +1,171 @@
+<app-blank title="Kategoriler" sectionTitle="Kategori Listesi">
+  <div class="form-group">
+    <button
+      type="button"
+      class="btn btn-outline-primary"
+      data-bs-toggle="modal"
+      data-bs-target="#addModal"
+    >
+      <i class="fa fa-plus"></i>
+    </button>
+    <div class="col-4" style="float: right">
+      <input
+        type="search"
+        class="col-md-4 form-control"
+        placeholder="Aranacak değeri yazın..."
+        [(ngModel)]="search"
+      />
+    </div>
+  </div>
+
+  <app-table [headers]="headers">
+    <tr
+    *ngFor="
+      let category of categories | categoryPipe : search;
+      let index = index
+    "
+  >
+    <td scope="row">{{ index + 1 }}</td>
+    <td>{{ category.name }}</td>
+    <td class="text-center">
+      <button
+        class="btn btn-outline-warning btn-sm"
+        (click)="get(category)"
+        data-bs-toggle="modal"
+        data-bs-target="#updateModal"
+      >
+        <i class="fa fa-edit"></i>
+      </button>
+      <button
+        class="btn btn-outline-danger btn-sm mx-1"
+        (click)="removeById(category)"
+      >
+        <i class="fa fa-trash"></i>
+      </button>
+    </td>
+  </tr>
+  </app-table>
+
+ 
+</app-blank>
+
+<!-- Ekleme Modal -->
+<div
+  class="modal fade"
+  id="addModal"
+  tabindex="-1"
+  aria-labelledby="addModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="addModalLabel">Kategori Ekle</h1>
+        <button
+          type="button"
+          class="btn-close"
+          id="addModalCloseBtn"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <form autocomplete="off" #addForm="ngForm" (ngSubmit)="add(addForm)">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="name" class="form-label">Kategori Adı</label>
+            <input
+              type="text"
+              ngModel
+              name="name"
+              id="name"
+              class="form-control"
+              placeholder=""
+              aria-describedby="nameHelpId"
+              #name
+              [appValid]="name.validity.valid"
+              required
+              minlength="3"
+            />
+            <small id="nameHelpId" class="text-muted">Kategori Adı Alanı</small>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Kapat
+          </button>
+          <button type="submit" class="btn btn-primary">Kaydet</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Ekleme Modal -->
+<!-- Güncelleme Modal -->
+
+<div
+  class="modal fade"
+  id="updateModal"
+  tabindex="-1"
+  aria-labelledby="updateModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="updateModalLabel">
+          Kategori Güncelle
+        </h1>
+        <button
+          type="button"
+          class="btn-close"
+          id="updateModalCloseBtn"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <form
+        autocomplete="off"
+        #updateForm="ngForm"
+        (ngSubmit)="update(updateForm)"
+      >
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="updateName" class="form-label">Kategori Adı</label>
+            <input
+              type="text"
+              ngModel
+              name="updateName"
+              id="updateName"
+              class="form-control"
+              placeholder=""
+              aria-describedby="updateNameHelpId"
+              #updateName
+              [(ngModel)]="updateCategory.name"
+              [appValid]="updateName.validity.valid"
+              required
+              minlength="3"
+            />
+            <small id="updateNameHelpId" class="text-muted"
+              >Kategori Adı Alanı</small
+            >
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Kapat
+          </button>
+          <button type="submit" class="btn btn-warning">Güncelle</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- Güncelleme Modal -->
+</div>

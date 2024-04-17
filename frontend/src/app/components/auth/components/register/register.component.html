@@ -1,0 +1,73 @@
+<div class="d-flex justify-content-center" style="margin-top: 75px">
+  <div class="col-md-5">
+    <div class="card">
+      <div class="card-header"><h2 class="text-center">Kayıt Sayfası</h2></div>
+      <div class="card-body">
+        <form
+          autocomplete="off"
+          #registerForm="ngForm"
+          (ngSubmit)="register(registerForm)"
+        >
+          <div class="form-group">
+            <label for="name">Ad Soyad</label>
+            <input
+              type="text"
+              [(ngModel)]="model.name"
+              name="name"
+              id="name"
+              #name
+              required
+              [appValid]="name.validity.valid"
+              minlength="3"
+              class="form-control"
+            />
+            <div class="invalid-feedback">
+              Ad Soyad alanı en az 3 karakter olmalıdır!
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="email">E-Mail Adresi</label>
+            <input
+              type="email"
+              [(ngModel)]="model.email"
+              name="email"
+              id="email"
+              #email
+              email="true"
+              required
+              [appValid]="email.validity.valid"
+              minlength="3"
+              class="form-control"
+            />
+            <div class="invalid-feedback">Geçerli bir email adresi yazın!</div>
+          </div>
+          <div class="form-group">
+            <label for="password">Şifre</label>
+            <input
+              type="text"
+              [(ngModel)]="model.password"
+              name="password"
+              id="password"
+              #password
+              required
+              [appValid]="password.validity.valid"
+              class="form-control"
+            />
+            <div class="invalid-feedback">Şifre Alanı Boş Geçilemez</div>
+          </div>
+          <div class="form-group mt-2">
+            <button
+              [disabled]="!registerForm.valid"
+              type="button"
+              class="btn btn-outline-success w-100"
+              (click)="register(registerForm)"
+            >
+              Kayıt Ol
+            </button>
+            <a routerLink="/login" style="float: right">Giriş Yap</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
