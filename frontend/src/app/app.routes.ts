@@ -30,6 +30,29 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'products',
+        loadComponent: () =>
+          import('./components/products/components/products/products.component').then(
+            (c) => c.ProductsComponent
+          ),
+      },
+      {
+        path: 'products/add',
+        loadComponent: () =>
+          import('./components/products/components/product-add/product-add.component').then(
+            (c) => c.ProductAddComponent
+          ),
+
+      },
+      {
+        path: 'products/update/:value',
+        loadComponent: () =>
+          import('./components/products/components/product-update/product-update.component').then(
+            (c) => c.ProductUpdateComponentimplements
+          ),
+
+      },
+      {
         path: 'categories',
         loadComponent: () =>
           import('./components/categories/categories.component').then(
