@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 const productSchema = new mongoose.Schema({
   _id: String,
   name: String,
-  imageUrl: Array,
+  imageUrls: Array,
   stock: Number,
   price: Number,
-  createDate: Date,
+  createdDate: Date,
   isActive: Boolean,
   categories: [{ type: String, ref: "Category" }],
 });

@@ -17,7 +17,7 @@ router.post("/add", upload.array("images"), async (req, res) => {
       price: price,
       categories: categories,
       isActive: true,
-      imagesUrls: req.files,
+      imageUrls: req.files,
       createdDate: new Date(),
     });
     await product.save();
@@ -31,7 +31,7 @@ router.post("/removeById", async (req, res) => {
     const { _id } = req.body;
     const product = await Product.findById(_id);
     if (product != null) {
-      product.imagesUrls.forEach((image) => {
+      product.imageUrls.forEach((image) => {
         fs.unlink(image.path, () => {});
       });
       await Product.findByIdAndDelete(_id);
@@ -42,7 +42,7 @@ router.post("/removeById", async (req, res) => {
   });
 });
 
-router.get("/", async (req, res) => {
+router.post("/", async (req, res) => {
   response(res, async () => {
     const { pageNumber, pageSize, search } = req.body;
     let productCount = await Product.find({
@@ -63,21 +63,29 @@ router.get("/", async (req, res) => {
       .populate("categories")
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize);
-    res.json(products);
-  });
-  let totalPageCount = Math.ceil(productCount / pageSize);
-  let model = {
-    datas: products,
-    pageNumber: pageNumber,
-    pageSize: pageSize,
-    totalPageCount: totalPageCount,
-    isFirstPage: pageNumber == 1 ? true : false,
-    isLastPage: totalPageCount == pageNumber ? true : false,
-  };
-  res.json(model);
-});
 
-router.get("/getById", async (req, res) => {
+    let totalPageCount = Math.ceil(productCount / pageSize);
+    let model = {
+      datas: products,
+      pageNumber: pageNumber,
+      pageSize: pageSize,
+      totalPageCount: totalPageCount,
+      isFirstPage: pageNumber == 1 ? true : false,
+      isLastPage: totalPageCount == pageNumber ? true : false,
+    };
+    res.json(model);
+  });
+});
+router.post("/changeActiveStatus", async (req, res) => {
+  response(res, async () => {
+    const { _id } = req.body;
+    let product = await Product.findById(_id);
+    product.isActive = !product.isActive;
+    await Product.findByIdAndUpdate(_id, product);
+    res.json({ message: "Ürünün durumu başarıyla değiştirildi!" });
+  });
+});
+router.post("/getById", async (req, res) => {
   response(res, async () => {
     const { _id } = req.body;
     let product = await Product.findById(_id);
@@ -89,7 +97,7 @@ router.post("/update", upload.array("images"), async (req, res) => {
   response(res, async () => {
     const { _id, name, stock, price, categories } = req.body;
     let product = await Product.findById(_id);
-    product.imagesUrls.forEach((image) => {
+    product.imageUrls.forEach((image) => {
       fs.unlink(image.path, () => {});
     });
     let imageUrls;
@@ -106,12 +114,12 @@ router.post("/update", upload.array("images"), async (req, res) => {
   });
 });
 
-router.post("removeImageByProductIdAndIndex", async (req, res) => {
+router.post("/removeImageByProductIdAndIndex", async (req, res) => {
   response(res, async () => {
     const { _id, index } = req.body;
     let product = await Product.findById(_id);
     if (product != null) {
-      if (product.imageUrls.lenght == 1) {
+      if (product.imageUrls.length == 1) {
         res.status(500).json({
           message:
             "Son ürün resmini silemezsiniz! En az 1 ürün resmi bulunmak zorundadır!",
@@ -128,4 +136,32 @@ router.post("removeImageByProductIdAndIndex", async (req, res) => {
     }
   });
 });
+
+router.post("/getAllForHomePage", async (req, res) => {
+  response(res, async () => {
+    const { pageNumber, pageSize, search, categoryId, priceFilter } = req.body;
+
+    let products = await Product.find({
+      isActive: true,
+      categories: {
+        $regex: categoryId,
+        $options: "i",
+      },
+      $or: [
+        {
+          name: {
+            $regex: search,
+            $options: "i",
+          },
+        },
+      ],
+    })
+      .sort(priceFilter == "0" ? { name: 1 } : { price: priceFilter })
+      .populate("categories")
+      .skip((pageNumber - 1) * pageSize)
+      .limit(pageSize);
+      res.json(products);
+  });
+});
+
 module.exports = router;
