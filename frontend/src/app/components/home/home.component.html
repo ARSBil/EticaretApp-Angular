@@ -1,1 +1,68 @@
-<app-blank title="Ana Sayfa" sublink="false" sectionTitle="Ürünler"></app-blank>
+<app-blank title="Ana Sayfa" sublink="false" sectionTitle="Ürünler">
+  <div class="row">
+    <div class="col-md-3 cerceve">
+      <ul>
+        <li
+          (click)="changeCategory(category._id, category.name)"
+          *ngFor="let category of categories"
+          [ngClass]="request.categoryId == category._id ? 'active' : ''"
+        >
+          {{ category.name }}
+        </li>
+      </ul>
+    </div>
+    <div class="col-md-9">
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-7">
+            <label>Arama</label>
+            <input
+              [(ngModel)]="request.search"
+              type="search"
+              class="form-control"
+              placeholder="Aranacak değeri yazın..."
+            />
+          </div>
+          <div class="col-md-3">
+            <label>Fiyat Sıralaması</label>
+            <select [(ngModel)]="request.priceFilter" class="form-control">
+              <option value="0">Seçim yapınız...</option>
+              <option value="1">Artan Fiyat</option>
+              <option value="-1">Azalan Fiyat</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <label>İşlemler</label>
+            <button
+              (click)="search()"
+              type="button"
+              class="btn btn-primary form-control"
+            >
+              Getir
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-md-4">
+          <div class="card text-center">
+            <div class="card-header"><h1>Domates</h1></div>
+            <div class="card-body">
+              <img
+                src="https://images.wisegeek.com/three-red-tomatoes.jpg"
+                width="200"
+                height="160"
+              />
+              <p><strong>Kalan Adet: 100</strong></p>
+              <hr />
+              <h5 class="alert alert-danger">Adet Fiyatı: 100 ₺</h5>
+              <button type="button" class="btn btn-outline-success w-100">
+                Sepete Ekle
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-blank>
