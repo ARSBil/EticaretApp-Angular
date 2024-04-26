@@ -1,0 +1,60 @@
+<app-blank title="Sepetim" sectionTitle="Sepetteki Ürünler">
+  <div class="row">
+    <div class="col-md-9">
+      <app-table [headers]="headers">
+        <tr *ngFor="let basket of baskets; let index = index">
+          <td>{{ index + 1 }}</td>
+          <td class="text-center">
+            <img
+              *ngIf="basket && basket.products[0].imageUrls"
+              [src]="
+                'http://localhost:5000/' + basket.products[0].imageUrls[0].path
+              "
+              width="50"
+            />
+          </td>
+          <td>
+            {{ basket.products[0].name }}
+          </td>
+          <td class="text-center">
+            <button
+              (click)="reduce(basket)"
+              class="btn btn-outline-danger btn-sm mx-1"
+              title="Sil"
+            >
+              <i class="fa fa-minus"></i>
+            </button>
+            {{ basket.quantity }}
+            <button
+              (click)="increase(basket)"
+              class="btn btn-outline-danger btn-sm mx-1"
+              title="Sil"
+            >
+              <i class="fa fa-plus"></i>
+            </button>
+          </td>
+          <td>{{ +basket.price.toFixed(2) | trCurrency : "₺" }}</td>
+          <td>
+            {{
+              +(basket.quantity * basket.price).toFixed(2) | trCurrency : "₺"
+            }}
+          </td>
+          <td class="text-center">
+            <button
+              (click)="removeById(basket._id)"
+              class="btn btn-outline-danger btn-sm mx-1"
+              title="Sil"
+            >
+              <i class="fa fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      </app-table>
+    </div>
+    <div class="col-md-3" style="border: 1px solid #ccc; padding: 10px;">
+     
+      <h3 class="alert alert-danger">Ödenecek:  {{ +sum.toFixed(2) | trCurrency : "₺" }}</h3>
+      <button (click)="createOrder()" *ngIf="sum>0" class="btn btn-danger w-100">Ödeme Yap</button>
+    </div>
+  </div>
+</app-blank>
