@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { OrdersComponent } from './components/orders/components/orders/orders.component';
 
 export const routes: Routes = [
   {
@@ -32,31 +33,43 @@ export const routes: Routes = [
       {
         path: 'products',
         loadComponent: () =>
-          import('./components/products/components/products/products.component').then(
-            (c) => c.ProductsComponent
-          ),
+          import(
+            './components/products/components/products/products.component'
+          ).then((c) => c.ProductsComponent),
       },
       {
         path: 'products/add',
         loadComponent: () =>
-          import('./components/products/components/product-add/product-add.component').then(
-            (c) => c.ProductAddComponent
-          ),
-
+          import(
+            './components/products/components/product-add/product-add.component'
+          ).then((c) => c.ProductAddComponent),
       },
       {
         path: 'products/update/:value',
         loadComponent: () =>
-          import('./components/products/components/product-update/product-update.component').then(
-            (c) => c.ProductUpdateComponentimplements
-          ),
-
+          import(
+            './components/products/components/product-update/product-update.component'
+          ).then((c) => c.ProductUpdateComponentimplements),
       },
       {
         path: 'categories',
         loadComponent: () =>
           import('./components/categories/categories.component').then(
             (c) => c.CategoriesComponent
+          ),
+      },
+      {
+        path: 'baskets',
+        loadComponent: () =>
+          import(
+            './components/baskets/components/baskets/baskets.component'
+          ).then((c) => c.BasketsComponent),
+      },
+      {
+        path: 'orders',
+        loadComponent: () =>
+          import('./components/orders/components/orders/orders.component').then(
+            (c) => OrdersComponent
           ),
       },
     ],

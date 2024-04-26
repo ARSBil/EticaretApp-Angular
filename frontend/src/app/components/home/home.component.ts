@@ -6,11 +6,14 @@ import { RequestModel } from '../../common/models/request.model';
 import { ProductService } from '../products/services/product.service';
 import { ProductModel } from '../products/models/product.model';
 import { PaginationResultModel } from '../../common/models/pagination-result.model';
+import { BasketModel } from '../baskets/models/basket.model';
+import { BasketService } from '../baskets/services/basket.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [SharedModule],
+  imports: [SharedModule,],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
@@ -22,19 +25,40 @@ export class HomeComponent implements OnInit {
   >();
   pageNumbers: number[] = [];
   product: ProductModel = new ProductModel();
+  direction = "";
   constructor(
     private _category: CategoryService,
-    private _product: ProductService
-  ) {}
+    private _product: ProductService,
+    private _basket: BasketService,
+    private _toastr: ToastrService
+  ) {
+    this.request.pageSize=10;
+  }
   ngOnInit(): void {
     this.getCategories();
     this.getAll(1);
   }
+  onScrollDown(ev: any) {
+    console.log("scrolled down!!", ev);
+    this.direction = "scroll down";
+    if(this.request.pageNumber<this.result.totalPageCount)
+    this.getAll(this.request.pageNumber+1);
+  }
+
+  onScrollUp(ev: any) {
+    console.log("scrolled up!", ev);
+    this.direction = "scroll up";
+  }
 
   getAll(pageNumber = 1) {
     this.request.pageNumber = pageNumber;
+    if(pageNumber===1) {
+      this.result.datas = [];
+    }
     this._product.getAllForHomePage(this.request, (res) => {
-      this.result.datas = [...this.result.datas, ...res.datas];
+      
+      this.result.datas.unshift(...res.datas);
+      //this.result.datas = [...this.result.datas||[], ...res.datas];
       this.result.isFirstPage = res.isFirstPage;
       this.result.isLastPage = res.isLastPage;
       this.result.pageNumber = res.pageNumber;
@@ -72,5 +96,19 @@ export class HomeComponent implements OnInit {
   changeCategory(categoryId: string, categoryName: string) {
     this.request.categoryName = categoryName;
     this.request.categoryId = categoryId;
+    this.getAll(1);
+  }
+
+  addBasket(productId:string, price: number) {
+    let model = new BasketModel();
+    model.productId = productId;
+    model.price = price;
+    model.quantity = 1;
+    this._basket.add(model, res=>{
+      this._toastr.success(res.message);
+      this.getAll();
+    })
+
+
   }
 }

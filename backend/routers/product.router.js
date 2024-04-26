@@ -76,6 +76,52 @@ router.post("/", async (req, res) => {
     res.json(model);
   });
 });
+
+router.post("/getAllForHomePage", async (req, res) => {
+  response(res, async () => {
+    const { pageNumber, pageSize, search, categoryId, priceFilter } = req.body;
+    let productCount = await Product.find({isActive: true,
+      categories: {
+        $regex: categoryId,
+        $options: "i",
+      },
+      $or: [
+        {
+          name: { $regex: search, $options: "i" },
+        },
+      ],
+    }).count();
+    let products = await Product.find({
+      isActive: true,
+      categories: {
+        $regex: categoryId,
+        $options: "i",
+      },
+      $or: [
+        {
+          name: {
+            $regex: search,
+            $options: "i",
+          },
+        },
+      ],
+    })
+      .sort(priceFilter == "0" ? { name: 1 } : { price: Number(priceFilter) })
+      .populate("categories")
+      .skip((pageNumber - 1) * pageSize)
+      .limit(pageSize);
+    let totalPageCount = Math.ceil(productCount / pageSize);
+    let model = {
+      datas: products,
+      pageNumber: pageNumber,
+      pageSize: pageSize,
+      totalPageCount: totalPageCount,
+      isFirstPage: pageNumber == 1 ? true : false,
+      isLastPage: totalPageCount == pageNumber ? true : false,
+    };
+    res.json(model);
+  });
+});
 router.post("/changeActiveStatus", async (req, res) => {
   response(res, async () => {
     const { _id } = req.body;
@@ -134,33 +180,6 @@ router.post("/removeImageByProductIdAndIndex", async (req, res) => {
     } else {
       res.status(403).json({ message: "Ürün kaydına ulaşılamadı!" });
     }
-  });
-});
-
-router.post("/getAllForHomePage", async (req, res) => {
-  response(res, async () => {
-    const { pageNumber, pageSize, search, categoryId, priceFilter } = req.body;
-
-    let products = await Product.find({
-      isActive: true,
-      categories: {
-        $regex: categoryId,
-        $options: "i",
-      },
-      $or: [
-        {
-          name: {
-            $regex: search,
-            $options: "i",
-          },
-        },
-      ],
-    })
-      .sort(priceFilter == "0" ? { name: 1 } : { price: priceFilter })
-      .populate("categories")
-      .skip((pageNumber - 1) * pageSize)
-      .limit(pageSize);
-      res.json(products);
   });
 });
 

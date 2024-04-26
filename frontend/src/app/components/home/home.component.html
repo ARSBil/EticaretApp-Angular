@@ -34,7 +34,7 @@
           <div class="col-md-2">
             <label>İşlemler</label>
             <button
-              (click)="search()"
+              (click)="getAll()"
               type="button"
               class="btn btn-primary form-control"
             >
@@ -43,20 +43,37 @@
           </div>
         </div>
       </div>
-      <div class="row mt-2">
-        <div class="col-md-4">
+      <div class="row mt-2 search-results" 
+      infinite-scroll 
+      (scrolled)="onScrollDown($event)" 
+      (scrolledUp)="onScrollUp($event)">
+        <div
+          class="col-md-4"
+          *ngFor="let product of result.datas; let i = index"
+        >
           <div class="card text-center">
-            <div class="card-header"><h1>Domates</h1></div>
+            <div class="card-header">
+              <h1>{{ product.name }}</h1>
+            </div>
             <div class="card-body">
               <img
-                src="https://images.wisegeek.com/three-red-tomatoes.jpg"
+                [src]="'http://localhost:5000/' + product.imageUrls[0].path"
                 width="200"
                 height="160"
               />
-              <p><strong>Kalan Adet: 100</strong></p>
+              <p>
+                <strong>Kalan Adet: {{ product.stock }}</strong>
+              </p>
               <hr />
-              <h5 class="alert alert-danger">Adet Fiyatı: 100 ₺</h5>
-              <button type="button" class="btn btn-outline-success w-100">
+              <h5 class="alert alert-danger">
+                Adet Fiyatı: {{ product.price | trCurrency : "₺" }}
+              </h5>
+              <button
+                *ngIf="product.stock > 0"
+                type="button"
+                class="btn btn-outline-success w-100"
+                (click)="addBasket(product._id,product.price)"
+              >
                 Sepete Ekle
               </button>
             </div>

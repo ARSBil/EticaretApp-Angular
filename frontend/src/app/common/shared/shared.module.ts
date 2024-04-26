@@ -5,8 +5,8 @@ import { RouterModule } from '@angular/router';
 import { ValidDirective } from '../directives/valid.directive';
 import { BlankComponent } from '../components/blank/blank.component';
 import { TableComponent } from '../components/table/table.component';
-
-
+import { TrCurrencyPipe } from 'tr-currency';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 @NgModule({
   declarations: [],
@@ -16,7 +16,9 @@ import { TableComponent } from '../components/table/table.component';
     RouterModule,
     ValidDirective,
     BlankComponent,
-    TableComponent
+    TableComponent,
+    TrCurrencyPipe,
+    InfiniteScrollModule,
   ],
   exports: [
     CommonModule,
@@ -24,7 +26,9 @@ import { TableComponent } from '../components/table/table.component';
     RouterModule,
     ValidDirective,
     BlankComponent,
-    TableComponent
-  ]
+    TableComponent,
+    TrCurrencyPipe,
+    InfiniteScrollModule,
+  ],
 })
-export class SharedModule { }
+export class SharedModule {}

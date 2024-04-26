@@ -39,12 +39,12 @@
           </ul>
         </li>
       </ul>
-      <button class="btn btn-outline-success position-relative" type="button">
+      <button routerLink="/baskets" class="btn btn-outline-success position-relative" type="button">
         <i class="fa-solid fa-cart-shopping"></i>
         <span
           class="position-absolute top-100 start-0 translate-middle badge rounded-pill bg-danger"
         >
-          0
+          {{_basket.count}}
         </span>
       </button>
       <button class="btn btn-outline-danger mx-1" type="button">
